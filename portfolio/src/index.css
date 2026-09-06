@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Space Grotesk", "Inter", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-bg: #0B0E14;
+  --color-bg-elevated: #10131C;
+  --color-surface: #151926;
+  --color-surface-2: #1B2030;
+  --color-border: #262B3A;
+  --color-border-soft: #1D2230;
+
+  --color-text: #E9EBF1;
+  --color-text-muted: #9AA1B4;
+  --color-text-faint: #5C6376;
+
+  --color-accent: #4C6FFF;
+  --color-accent-hover: #6485FF;
+  --color-accent-soft: #4C6FFF1F;
+  --color-accent-2: #33D6BE;
+  --color-accent-2-soft: #33D6BE1F;
+}
+
+/* Light theme override — applied when <html> has the "light" class.
+   Because Tailwind's generated utilities reference these custom
+   properties at runtime, redefining them here is enough to re-theme
+   every background, text, and border utility without touching components. */
+html.light {
+  --color-bg: #F5F6FA;
+  --color-bg-elevated: #FFFFFF;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #EDEFF5;
+  --color-border: #DFE2EC;
+  --color-border-soft: #E8EAF1;
+
+  --color-text: #14161F;
+  --color-text-muted: #565C6E;
+  --color-text-faint: #8B93A7;
+
+  --color-accent: #3556E0;
+  --color-accent-hover: #2C48C4;
+  --color-accent-soft: #3556E014;
+  --color-accent-2: #128F7C;
+  --color-accent-2-soft: #128F7C14;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+/* thin, quiet scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-2);
+  border-radius: 999px;
+  border: 2px solid var(--color-bg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.container-page {
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container-page {
+    padding-inline: 2.5rem;
+  }
+}
+
+.section-pad {
+  padding-block: 6rem;
+}
+
+@media (max-width: 767px) {
+  .section-pad {
+    padding-block: 4rem;
+  }
+}

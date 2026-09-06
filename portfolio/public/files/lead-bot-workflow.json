@@ -1,0 +1,326 @@
+{
+  "name": "PrimeHomes Realty - Lead Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-bot",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "6718207c-7070-4626-9f68-85f1237aece4",
+      "name": "Webhook - Receive Message",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1568,
+        448
+      ],
+      "webhookId": "lead-bot"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build the Claude prompt from the incoming message + conversation history\nconst body = $input.first().json.body || $input.first().json;\nconst sessionId = body.session_id;\nconst message = body.message;\nconst history = body.history || [];\n\nconst transcript = history\n  .map(h => `${h.role === 'user' ? 'Customer' : 'Assistant'}: ${h.text}`)\n  .join('\\n');\n\nconst systemPrompt = `You are the AI assistant for PrimeHomes Realty, a real estate company.\nYou act like a friendly, efficient receptionist collecting information from a potential customer (a \"lead\").\n\nYour job on every turn:\n1. Read the full conversation so far.\n2. Extract any of these fields you can find, across the WHOLE conversation (not just the latest message): name, email, phone, property_type (apartment/house/land/commercial/office/shop), bedrooms (number), location, budget (a number in Naira, no symbols/commas), buy_or_rent (\"buy\" or \"rent\"), intent (\"buying\"|\"renting\"|\"selling\"|\"land\"|\"enquiry\"), timeline (\"immediate\"|\"1_month\"|\"3_months\"|\"researching\").\n3. Write a short, warm, natural reply that either asks ONE clear follow-up question for the most important missing field, or, if you have enough information (at least property_type, location, budget, and intent), confirms the details back and lets them know a specialist will reach out.\n4. Never invent information the customer didn't give you. Use null for anything unknown.\n\nRespond with ONLY valid JSON, no markdown fences, no commentary, in exactly this shape:\n{\n  \"extracted\": {\n    \"name\": string|null,\n    \"email\": string|null,\n    \"phone\": string|null,\n    \"property_type\": string|null,\n    \"bedrooms\": number|null,\n    \"location\": string|null,\n    \"budget\": number|null,\n    \"buy_or_rent\": string|null,\n    \"intent\": string|null,\n    \"timeline\": string|null\n  },\n  \"missing_fields\": string[],\n  \"reply\": string\n}`;\n\nconst userContent = `Conversation so far:\\n${transcript}\\n\\nLatest customer message: \"${message}\"\\n\\nReturn the JSON now.`;\n\nreturn [{\n  json: {\n    session_id: sessionId,\n    message,\n    system_prompt: systemPrompt,\n    user_content: userContent\n  }\n}];"
+      },
+      "id": "82c5c3b6-016f-457b-8462-181b487dd7e3",
+      "name": "Build Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1360,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "={{ $credentials.anthropicApi.apiKey }}"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: \"claude-sonnet-4-5\", max_tokens: 1000, system: $json.system_prompt, messages: [ { role: \"user\", content: $json.user_content } ] }) }}",
+        "options": {}
+      },
+      "id": "a8a2b958-39b7-4811-98bd-da565885a737",
+      "name": "Claude - Extract & Reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1136,
+        448
+      ],
+      "notesInFlow": true,
+      "notes": "Set up an 'Anthropic Account' credential (header auth, api key) in n8n and attach it here. Swap the model name for whatever current model your API key has access to."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Claude's JSON response and merge it onto the session/message from the previous node\nconst prev = $('Build Prompt').first().json;\nconst aiRaw = $input.first().json;\n\nlet text = aiRaw.content?.[0]?.text || '{}';\ntext = text.trim().replace(/^```json/, '').replace(/^```/, '').replace(/```$/, '').trim();\n\nlet parsed;\ntry {\n  parsed = JSON.parse(text);\n} catch (e) {\n  parsed = { extracted: {}, missing_fields: [], reply: \"Thanks for reaching out — could you tell me a bit more about what you're looking for?\" };\n}\n\nconst extracted = parsed.extracted || {};\n\nreturn [{\n  json: {\n    session_id: prev.session_id,\n    last_message: prev.message,\n    reply: parsed.reply,\n    missing_fields: parsed.missing_fields || [],\n    ...extracted\n  }\n}];"
+      },
+      "id": "dd84d83f-205c-45f6-935a-413af774d1ed",
+      "name": "Parse AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -912,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Simple lead scoring rubric (from the class rules):\n// phone +10, budget +20, location +15, property_type +15, buying soon +25, clear requirements +15\nconst d = $input.first().json;\n\nlet score = 0;\nif (d.phone) score += 10;\nif (d.budget) score += 20;\nif (d.location) score += 15;\nif (d.property_type) score += 15;\nif (d.timeline === 'immediate' || d.timeline === '1_month') score += 25;\n\nconst requiredForClear = ['property_type', 'location', 'budget', 'intent'];\nconst hasClearRequirements = requiredForClear.every(f => d[f] !== null && d[f] !== undefined && d[f] !== '');\nif (hasClearRequirements) score += 15;\n\nscore = Math.min(score, 100);\n\nlet status;\nif (score >= 80) status = 'HOT';\nelse if (score >= 50) status = 'WARM';\nelse status = 'COLD';\n\nreturn [{ json: { ...d, score, status } }];"
+      },
+      "id": "c01064d4-5867-4ca1-8523-51f4a65ec427",
+      "name": "Calculate Lead Score",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -688,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:8000/lead",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ session_id: $json.session_id, name: $json.name, email: $json.email, phone: $json.phone, property_type: $json.property_type, bedrooms: $json.bedrooms, location: $json.location, budget: $json.budget, buy_or_rent: $json.buy_or_rent, intent: $json.intent, timeline: $json.timeline, score: $json.score, status: $json.status, last_message: $json.last_message }) }}",
+        "options": {}
+      },
+      "id": "49c63b03-a192-4634-ac85-fe6f27f4e409",
+      "name": "Store Lead (Backend API)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -480,
+        448
+      ],
+      "notes": "Calls the FastAPI backend's POST /lead endpoint. Change the URL if the backend isn't on localhost:8000."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cond-hot",
+              "leftValue": "={{ $json.score }}",
+              "rightValue": 80,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "866c21dd-48e2-4542-ab6e-785d785876c0",
+      "name": "IF Hot Lead",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-SLACK-OR-WHATSAPP-WEBHOOK-URL",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: `🔥 HOT LEAD (score ${$json.score}) — ${$json.name || 'Unknown'} | ${$json.property_type || '?'} in ${$json.location || '?'} | Budget: ${$json.budget || '?'} | Phone: ${$json.phone || '?'} | Timeline: ${$json.timeline || '?'}` }) }}",
+        "options": {}
+      },
+      "id": "7cc84d55-b67b-49ef-9853-2b47215d284f",
+      "name": "Alert Sales Team (Hot)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -32,
+        352
+      ],
+      "notes": "Replace the URL with your real Slack incoming-webhook / WhatsApp Business API / email endpoint."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-SLACK-OR-WHATSAPP-WEBHOOK-URL",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: `New lead (score ${$json.score}, ${$json.status}) — ${$json.name || 'Unknown'} | ${$json.property_type || '?'} in ${$json.location || '?'}` }) }}",
+        "options": {}
+      },
+      "id": "ee698265-ab09-4fb2-81d9-900df9d5de6d",
+      "name": "Log Lead (Normal)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -32,
+        560
+      ],
+      "notes": "Lower-urgency leads still get logged for the team's daily digest / standard follow-up queue."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ reply: $json.reply, score: $json.score, status: $json.status, lead_id: $json.id }) }}",
+        "options": {}
+      },
+      "id": "5ea9ec86-29c2-4183-af8c-dcd1e5b09e80",
+      "name": "Respond to Backend",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        448
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Receive Message": {
+      "main": [
+        [
+          {
+            "node": "Build Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Prompt": {
+      "main": [
+        [
+          {
+            "node": "Claude - Extract & Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude - Extract & Reply": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Response": {
+      "main": [
+        [
+          {
+            "node": "Calculate Lead Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Lead Score": {
+      "main": [
+        [
+          {
+            "node": "Store Lead (Backend API)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Lead (Backend API)": {
+      "main": [
+        [
+          {
+            "node": "IF Hot Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Hot Lead": {
+      "main": [
+        [
+          {
+            "node": "Alert Sales Team (Hot)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Lead (Normal)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alert Sales Team (Hot)": {
+      "main": [
+        [
+          {
+            "node": "Respond to Backend",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Lead (Normal)": {
+      "main": [
+        [
+          {
+            "node": "Respond to Backend",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "68dd2019-319e-4fcf-b46d-9b22da55b77e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "499f2bdbeece6852d6591335763319734f0c33ea2530f37bb8437404cd556994"
+  },
+  "nodeGroups": [],
+  "id": "WcYUvi8V3ZAhgkfI",
+  "tags": []
+}
