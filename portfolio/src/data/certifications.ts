@@ -7,13 +7,12 @@ import type { Certification } from "./types";
 // This section hides itself automatically while this array is empty.
 // ─────────────────────────────────────────────────────────────
 export const certifications: Certification[] = [
-  // Example — replace with your real certifications:
-  // {
-  //   id: "cert-001",
-  //   title: "Foundations of Cybersecurity",
-  //   issuer: "Google / Coursera",
-  //   date: "2026",
-  //   credentialUrl: "https://coursera.org/verify/your-credential-id",
-  //   image: "/certifications/cybersecurity-foundations.png",
-  // },
+  {
+    id: "cert-001",
+    title: "Data Analytics Consulting Virtual Internship",
+    issuer: "KPMG / Forage",
+    date: "August 2023",
+    // credentialUrl: "", // optional verification link if available
+    image: "/certifications/kpmg-data-analytics-certificate.png",
+  },
 ];
