@@ -13,6 +13,6 @@ export const certifications: Certification[] = [
     issuer: "KPMG / Forage",
     date: "August 2023",
     // credentialUrl: "", // optional verification link if available
-    image: "/certifications/kpmg-data-analytics-certificate.pdf",
+    image: "/certifications/kpmg-data-analytics-certificate.png",
   },
 ];
