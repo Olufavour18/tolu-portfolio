@@ -13,6 +13,14 @@ export const certifications: Certification[] = [
     issuer: "KPMG / Forage",
     date: "August 2023",
     // credentialUrl: "", // optional verification link if available
-    image: "/certifications/kpmg-data-analytics-certificate.pdf",
+    image: "/certifications/kpmg-data-analytics-certificate.png",
+  },
+  {
+    id: "cert-002",
+    title: "Data Analytics Training Program",
+    issuer: "DataAce Academy",
+    date: "July 2023",
+    // credentialUrl: "", // optional verification link if available
+    image: "/certifications/dataace-academy-data-analytics-certificate.png",
   },
 ];
