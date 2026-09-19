@@ -7,23 +7,23 @@ import { useRoute } from "../hooks/useRoute";
 import { openSection } from "../hooks/useExpand";
 
 type NavLink =
-  | { label: string; kind: "route"; to: "/" | "/services" }
-  | { label: string; kind: "hash"; hash: string; section?: "about" | "experience" | "certifications" };
+  | { label: string; kind: "route"; to: "/" | "/about" }
+  | { label: string; kind: "hash"; hash: string; section?: "experience" | "certifications" };
 
 const homeLinks: NavLink[] = [
   { label: "Home", kind: "hash", hash: "#home" },
-  { label: "About", kind: "hash", hash: "#about", section: "about" },
-  { label: "Services", kind: "route", to: "/services" },
-  { label: "Skills", kind: "hash", hash: "#skills" },
+  { label: "About", kind: "route", to: "/about" },
   { label: "Experience", kind: "hash", hash: "#experience", section: "experience" },
   { label: "Certifications", kind: "hash", hash: "#certifications", section: "certifications" },
   { label: "Contact", kind: "hash", hash: "#contact" },
 ];
 
-const servicesLinks: NavLink[] = [
+const aboutLinks: NavLink[] = [
   { label: "Home", kind: "route", to: "/" },
+  { label: "About", kind: "hash", hash: "#about" },
   { label: "Services", kind: "hash", hash: "#services" },
   { label: "Projects", kind: "hash", hash: "#projects" },
+  { label: "Skills", kind: "hash", hash: "#skills" },
   { label: "Contact", kind: "route", to: "/" },
 ];
 
@@ -33,7 +33,7 @@ export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const { path, navigate } = useRoute();
 
-  const links = path === "/services" ? servicesLinks : homeLinks;
+  const links = path === "/about" ? aboutLinks : homeLinks;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -67,19 +67,22 @@ export default function Navbar() {
       return;
     }
 
+    if (path === "/about") {
+      document.querySelector(link.hash)?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+
     if (path !== "/") {
       navigate("/");
       setTimeout(() => {
         if (link.section) openSection(link.section);
-        const el = document.querySelector(link.hash);
-        el?.scrollIntoView({ behavior: "smooth" });
+        document.querySelector(link.hash)?.scrollIntoView({ behavior: "smooth" });
       }, 80);
       return;
     }
 
     if (link.section) openSection(link.section);
-    const el = document.querySelector(link.hash);
-    el?.scrollIntoView({ behavior: "smooth" });
+    document.querySelector(link.hash)?.scrollIntoView({ behavior: "smooth" });
   };
 
   const goHome = () => {
