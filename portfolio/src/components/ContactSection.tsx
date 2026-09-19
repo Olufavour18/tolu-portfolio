@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, Linkedin, Github, MessageCircle, Send, Copy, Check } from "lucide-react";
+import { Mail, Link2, Code2, MessageCircle, Send, Copy, Check } from "lucide-react";
 import { site } from "../data/site";
 import Reveal from "./Reveal";
 
@@ -58,14 +58,14 @@ export default function ContactSection() {
     {
       label: "LinkedIn",
       href: site.social.linkedin,
-      icon: Linkedin,
+      icon: Link2,
       external: true,
       show: !!site.social.linkedin,
     },
     {
       label: "GitHub",
       href: site.social.github,
-      icon: Github,
+      icon: Code2,
       external: true,
       show: !!site.social.github,
     },
