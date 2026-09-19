@@ -8,11 +8,14 @@ import {
   type ReactNode,
 } from "react";
 
-type Route = "/" | "/services";
+type Route = "/" | "/about" | "/services";
 
 function normalizePath(pathname: string): Route {
+  if (pathname === "/about" || pathname.startsWith("/about/")) {
+    return "/about";
+  }
   if (pathname === "/services" || pathname.startsWith("/services/")) {
-    return "/services";
+    return "/about";
   }
   return "/";
 }
@@ -36,10 +39,11 @@ export function RouteProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const navigate = useCallback((to: Route) => {
-    if (window.location.pathname !== to) {
-      window.history.pushState({}, "", to);
+    const target = to === "/services" ? "/about" : to;
+    if (window.location.pathname !== target) {
+      window.history.pushState({}, "", target);
     }
-    setPath(to);
+    setPath(target === "/services" ? "/about" : target);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
