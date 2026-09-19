@@ -58,7 +58,7 @@ export default function Hero() {
           <motion.div variants={item} className="mt-9 flex flex-wrap gap-4">
             <button
               type="button"
-              onClick={() => navigate("/services")}
+              onClick={() => navigate("/about")}
               className="inline-flex items-center gap-2 rounded-md bg-[var(--color-accent)] px-6 py-3 text-sm font-medium text-white hover:bg-[var(--color-accent-hover)] transition-colors"
             >
               View my projects
