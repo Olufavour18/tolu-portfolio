@@ -2,11 +2,13 @@ import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowUpRight, Download } from "lucide-react";
 import { site } from "../data/site";
 import WorkflowBackground from "./WorkflowBackground";
+import { useRoute } from "../hooks/useRoute";
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
 
 export default function Hero() {
   const prefersReducedMotion = useReducedMotion();
+  const { navigate } = useRoute();
 
   const container: Variants = {
     hidden: {},
@@ -54,12 +56,13 @@ export default function Hero() {
           </motion.p>
 
           <motion.div variants={item} className="mt-9 flex flex-wrap gap-4">
-            <a
-              href="#projects"
+            <button
+              type="button"
+              onClick={() => navigate("/services")}
               className="inline-flex items-center gap-2 rounded-md bg-[var(--color-accent)] px-6 py-3 text-sm font-medium text-white hover:bg-[var(--color-accent-hover)] transition-colors"
             >
               View my projects
-            </a>
+            </button>
             <a
               href="#contact"
               className="inline-flex items-center gap-2 rounded-md border border-[var(--color-border)] px-6 py-3 text-sm font-medium text-[var(--color-text)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"

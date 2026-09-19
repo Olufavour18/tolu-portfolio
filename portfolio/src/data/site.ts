@@ -1,9 +1,5 @@
 import type { SiteInfo } from "./types";
 
-// ─────────────────────────────────────────────────────────────
-// Personal information and social links.
-// Replace the placeholder values below with your own.
-// ─────────────────────────────────────────────────────────────
 export const site: SiteInfo = {
   name: "Tolu Favour Omoloye",
   role: "AI Automation Specialist, n8n Workflow Developer & Data Analyst",
@@ -11,10 +7,8 @@ export const site: SiteInfo = {
     "I build intelligent automations, data-driven systems, and digital workflows that reduce repetitive work and help businesses operate smarter.",
   location: "Nigeria",
   email: "omoloyefavourtolu@gmail.com",
-  resumeUrl: "/Tolu-Favour-Omoloye-CV.pdf", // e.g. "/resume.pdf" — add the file to /public and set the path
+  resumeUrl: "/Tolu-Favour-Omoloye-CV.pdf",
 
-  // The About section on the site. Each string below becomes one
-  // paragraph, shown in order — add, remove, or rewrite freely.
   aboutParagraphs: [
     "I'm Tolu Favour Omoloye, an AI Automation Specialist, n8n Workflow Developer, and Data Analyst. My work sits at the intersection of automation and data — building systems that take repetitive, manual tasks off a team's plate and surfacing the numbers that help them make better decisions.",
     "On the automation side, I design and build workflows in n8n that connect the tools a business already uses — forms, CRMs, messaging platforms, and APIs — so information moves seamlessly between them without anyone copying and pasting. I also build AI agents that can answer questions, qualify leads, and handle first-line requests on their own.",
@@ -22,10 +16,9 @@ export const site: SiteInfo = {
     "I care about building things that keep working after I hand them over: clear documentation, sensible structure, and systems that are easy to extend as a business grows.",
   ],
 
-  // Short bullets shown in the "What I focus on" card next to the About text.
   focusAreas: [
     "AI automation",
-    "business intelligence",
+    "Business intelligence",
     "Management Information Systems (MIS) Reporting, WAM & FMS Database Updates",
     "n8n workflow automation",
     "Data analytics",
@@ -33,7 +26,7 @@ export const site: SiteInfo = {
     "CRM automation",
     "AI agents",
     "Reporting & dashboards",
-    "API integrations",
+    "API integration",
   ],
 
   social: {
