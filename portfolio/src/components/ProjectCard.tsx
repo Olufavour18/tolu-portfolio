@@ -10,10 +10,11 @@ export default function ProjectCard({ project, onOpen }: ProjectCardProps) {
   return (
     <motion.button
       layout
+      type="button"
       onClick={() => onOpen(project)}
       whileHover={{ y: -4 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="text-left rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden flex flex-col group focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+      className="text-left rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden flex flex-col group focus-visible:outline-2 focus-visible:outline-[var(--color-accent)] w-full"
     >
       <div className="aspect-[16/10] overflow-hidden bg-[var(--color-bg-elevated)]">
         <img
@@ -44,19 +45,8 @@ export default function ProjectCard({ project, onOpen }: ProjectCardProps) {
           {project.shortDescription}
         </p>
 
-        <div className="mt-auto pt-3 flex flex-wrap gap-1.5">
-          {project.tools.slice(0, 4).map((tool) => (
-            <span
-              key={tool}
-              className="text-xs rounded border border-[var(--color-border)] px-2 py-0.5 text-[var(--color-text-muted)]"
-            >
-              {tool}
-            </span>
-          ))}
-        </div>
-
-        <span className="mt-2 text-sm font-medium text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
-          View project
+        <span className="mt-auto pt-2 text-sm font-medium text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
+          Explore more
         </span>
       </div>
     </motion.button>
