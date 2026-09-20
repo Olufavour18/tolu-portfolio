@@ -5,6 +5,7 @@ import { useExpand } from "../hooks/useExpand";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 
+/** Legacy timeline (not used on home; kept for reference). Home uses ExperiencePreview. */
 export default function ExperienceTimeline() {
   const { expanded, toggle } = useExpand();
   const isOpen = expanded.experience;
@@ -51,7 +52,7 @@ export default function ExperienceTimeline() {
                 <div className="space-y-10">
                   {experience.map((item) => (
                     <div
-                      key={`${item.role}-${item.company}`}
+                      key={item.id}
                       className="relative pl-10"
                     >
                       <span className="absolute left-0 top-1.5 w-[15px] h-[15px] rounded-full border-2 border-[var(--color-accent)] bg-[var(--color-bg)]" />
@@ -73,7 +74,7 @@ export default function ExperienceTimeline() {
                         {item.description}
                       </p>
 
-                      {item.achievements.length > 0 && (
+                      {item.achievements && item.achievements.length > 0 && (
                         <ul className="space-y-1.5">
                           {item.achievements.map((a) => (
                             <li
