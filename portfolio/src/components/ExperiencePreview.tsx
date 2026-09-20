@@ -19,7 +19,7 @@ export default function ExperiencePreview() {
 
         <div className="grid md:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] gap-10 md:gap-14 lg:gap-16 items-start">
           <Reveal>
-            <blockquote className="relative pl-5 md:pl-6 border-l-2 border-[var(--color-gold)]">
+            <blockquote className="relative pl-5 md:pl-6 border-l-2 border-[var(--color-accent)]">
               <p className="font-[var(--font-display)] text-[var(--color-text)] text-xl sm:text-2xl md:text-[1.65rem] leading-snug tracking-tight">
                 {experienceQuote}
               </p>
@@ -33,7 +33,7 @@ export default function ExperiencePreview() {
                   key={item.id}
                   className={`py-5 ${i > 0 ? "border-t border-[var(--color-border-soft)]" : ""}`}
                 >
-                  <h3 className="font-[var(--font-display)] text-[var(--color-gold)] text-lg sm:text-xl font-medium leading-snug">
+                  <h3 className="font-[var(--font-display)] text-[var(--color-accent)] text-lg sm:text-xl font-medium leading-snug">
                     {item.role}, {item.company}
                   </h3>
                   <p className="mt-1 text-xs text-[var(--color-text-faint)] font-mono">

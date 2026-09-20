@@ -31,7 +31,7 @@ export default function ExperiencePage() {
 
           <div className="grid md:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] gap-10 md:gap-14 lg:gap-16 items-start">
             <Reveal>
-              <blockquote className="relative pl-5 md:pl-6 border-l-2 border-[var(--color-gold)] md:sticky md:top-28">
+              <blockquote className="relative pl-5 md:pl-6 border-l-2 border-[var(--color-accent)] md:sticky md:top-28">
                 <p className="font-[var(--font-display)] text-[var(--color-text)] text-xl sm:text-2xl md:text-[1.65rem] leading-snug tracking-tight">
                   {experienceQuote}
                 </p>
@@ -44,7 +44,7 @@ export default function ExperiencePage() {
                   <article
                     className={`py-6 md:py-7 ${i > 0 ? "border-t border-[var(--color-border-soft)]" : ""}`}
                   >
-                    <h2 className="font-[var(--font-display)] text-[var(--color-gold)] text-lg sm:text-xl font-medium leading-snug">
+                    <h2 className="font-[var(--font-display)] text-[var(--color-accent)] text-lg sm:text-xl font-medium leading-snug">
                       {item.role}, {item.company}
                     </h2>
                     <p className="mt-1 text-xs text-[var(--color-text-faint)] font-mono">
@@ -60,7 +60,7 @@ export default function ExperiencePage() {
                             key={a}
                             className="flex gap-2 text-sm text-[var(--color-text-muted)] leading-relaxed"
                           >
-                            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-gold)] mt-1.5 shrink-0" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] mt-1.5 shrink-0" />
                             {a}
                           </li>
                         ))}
