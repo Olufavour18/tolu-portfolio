@@ -8,15 +8,12 @@ import {
   type ReactNode,
 } from "react";
 
-type Route = "/" | "/about" | "/services";
+type Route = "/" | "/about" | "/experience" | "/services";
 
 function normalizePath(pathname: string): Route {
-  if (pathname === "/about" || pathname.startsWith("/about/")) {
-    return "/about";
-  }
-  if (pathname === "/services" || pathname.startsWith("/services/")) {
-    return "/about";
-  }
+  if (pathname === "/about" || pathname.startsWith("/about/")) return "/about";
+  if (pathname === "/experience" || pathname.startsWith("/experience/")) return "/experience";
+  if (pathname === "/services" || pathname.startsWith("/services/")) return "/about";
   return "/";
 }
 
@@ -43,7 +40,7 @@ export function RouteProvider({ children }: { children: ReactNode }) {
     if (window.location.pathname !== target) {
       window.history.pushState({}, "", target);
     }
-    setPath(target === "/services" ? "/about" : target);
+    setPath(normalizePath(target));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
