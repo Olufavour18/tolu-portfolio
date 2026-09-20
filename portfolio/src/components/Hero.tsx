@@ -21,6 +21,18 @@ export default function Hero() {
     show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
   };
 
+  const goToProjects = () => {
+    navigate("/about");
+    // Projects section lives on the About page (#projects)
+    setTimeout(() => {
+      document.getElementById("projects")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+  };
+
+  const goToContact = () => {
+    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <section
       id="home"
@@ -58,18 +70,19 @@ export default function Hero() {
           <motion.div variants={item} className="mt-9 flex flex-wrap gap-4">
             <button
               type="button"
-              onClick={() => navigate("/about")}
+              onClick={goToProjects}
               className="inline-flex items-center gap-2 rounded-md bg-[var(--color-accent)] px-6 py-3 text-sm font-medium text-white hover:bg-[var(--color-accent-hover)] transition-colors"
             >
               View my projects
             </button>
-            <a
-              href="#contact"
+            <button
+              type="button"
+              onClick={goToContact}
               className="inline-flex items-center gap-2 rounded-md border border-[var(--color-border)] px-6 py-3 text-sm font-medium text-[var(--color-text)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
             >
               Let's work together
               <ArrowUpRight size={15} />
-            </a>
+            </button>
             {site.resumeUrl && (
               <a
                 href={site.resumeUrl}
