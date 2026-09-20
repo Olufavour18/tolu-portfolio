@@ -7,6 +7,7 @@ import HomeAboutIntro from "./components/HomeAboutIntro";
 import ExperiencePreview from "./components/ExperiencePreview";
 import ExperiencePage from "./components/ExperiencePage";
 import CertificationsSection from "./components/CertificationsSection";
+import CertificationsPage from "./components/CertificationsPage";
 import Testimonials from "./components/Testimonials";
 import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
@@ -33,6 +34,7 @@ function AppRoutes() {
       <Navbar />
       {path === "/about" && <AboutServicesPage />}
       {path === "/experience" && <ExperiencePage />}
+      {path === "/certifications" && <CertificationsPage />}
       {path === "/" && <HomePage />}
       <Footer />
     </div>

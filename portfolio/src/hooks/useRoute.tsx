@@ -8,11 +8,13 @@ import {
   type ReactNode,
 } from "react";
 
-type Route = "/" | "/about" | "/experience" | "/services";
+type Route = "/" | "/about" | "/experience" | "/certifications" | "/services";
 
 function normalizePath(pathname: string): Route {
   if (pathname === "/about" || pathname.startsWith("/about/")) return "/about";
   if (pathname === "/experience" || pathname.startsWith("/experience/")) return "/experience";
+  if (pathname === "/certifications" || pathname.startsWith("/certifications/"))
+    return "/certifications";
   if (pathname === "/services" || pathname.startsWith("/services/")) return "/about";
   return "/";
 }
