@@ -12,9 +12,6 @@ export default function HomeAboutIntro() {
     <section id="about-intro" className="section-pad pt-0 md:pt-0">
       <div className="container-page max-w-3xl">
         <Reveal>
-          <h2 className="font-[var(--font-display)] font-semibold tracking-tight text-[var(--color-text)] text-2xl sm:text-3xl mb-5">
-            About me
-          </h2>
           <p className="text-[var(--color-text-muted)] leading-relaxed text-base md:text-lg">
             {SHORT_INTRO}
           </p>
