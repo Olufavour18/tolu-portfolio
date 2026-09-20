@@ -3,7 +3,9 @@ import { ExpandProvider } from "./hooks/useExpand";
 import { RouteProvider, useRoute } from "./hooks/useRoute";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import ExperienceTimeline from "./components/ExperienceTimeline";
+import HomeAboutIntro from "./components/HomeAboutIntro";
+import ExperiencePreview from "./components/ExperiencePreview";
+import ExperiencePage from "./components/ExperiencePage";
 import CertificationsSection from "./components/CertificationsSection";
 import Testimonials from "./components/Testimonials";
 import ContactSection from "./components/ContactSection";
@@ -14,7 +16,8 @@ function HomePage() {
   return (
     <main>
       <Hero />
-      <ExperienceTimeline />
+      <HomeAboutIntro />
+      <ExperiencePreview />
       <CertificationsSection />
       <Testimonials />
       <ContactSection />
@@ -28,7 +31,9 @@ function AppRoutes() {
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
       <Navbar />
-      {path === "/about" ? <AboutServicesPage /> : <HomePage />}
+      {path === "/about" && <AboutServicesPage />}
+      {path === "/experience" && <ExperiencePage />}
+      {path === "/" && <HomePage />}
       <Footer />
     </div>
   );

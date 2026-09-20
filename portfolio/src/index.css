@@ -21,12 +21,11 @@
   --color-accent-soft: #4C6FFF1F;
   --color-accent-2: #33D6BE;
   --color-accent-2-soft: #33D6BE1F;
+
+  /* Soft gold for experience quote bar + role headings */
+  --color-gold: #C9A35A;
 }
 
-/* Light theme override — applied when <html> has the "light" class.
-   Because Tailwind's generated utilities reference these custom
-   properties at runtime, redefining them here is enough to re-theme
-   every background, text, and border utility without touching components. */
 html.light {
   --color-bg: #F5F6FA;
   --color-bg-elevated: #FFFFFF;
@@ -44,6 +43,8 @@ html.light {
   --color-accent-soft: #3556E014;
   --color-accent-2: #128F7C;
   --color-accent-2-soft: #128F7C14;
+
+  --color-gold: #9A7B2F;
 }
 
 html {
@@ -74,7 +75,6 @@ body {
   color: #fff;
 }
 
-/* thin, quiet scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }

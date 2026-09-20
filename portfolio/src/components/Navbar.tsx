@@ -7,23 +7,28 @@ import { useRoute } from "../hooks/useRoute";
 import { openSection } from "../hooks/useExpand";
 
 type NavLink =
-  | { label: string; kind: "route"; to: "/" | "/about" }
-  | { label: string; kind: "hash"; hash: string; section?: "experience" | "certifications" };
+  | { label: string; kind: "route"; to: "/" | "/about" | "/experience" }
+  | { label: string; kind: "hash"; hash: string; section?: "certifications" };
 
 const homeLinks: NavLink[] = [
-  { label: "Home", kind: "hash", hash: "#home" },
+  { label: "Home", kind: "route", to: "/" },
   { label: "About", kind: "route", to: "/about" },
-  { label: "Experience", kind: "hash", hash: "#experience", section: "experience" },
+  { label: "Experience", kind: "route", to: "/experience" },
   { label: "Certifications", kind: "hash", hash: "#certifications", section: "certifications" },
   { label: "Contact", kind: "hash", hash: "#contact" },
 ];
 
 const aboutLinks: NavLink[] = [
   { label: "Home", kind: "route", to: "/" },
-  { label: "About", kind: "hash", hash: "#about" },
-  { label: "Services", kind: "hash", hash: "#services" },
-  { label: "Projects", kind: "hash", hash: "#projects" },
-  { label: "Skills", kind: "hash", hash: "#skills" },
+  { label: "About", kind: "route", to: "/about" },
+  { label: "Experience", kind: "route", to: "/experience" },
+  { label: "Contact", kind: "route", to: "/" },
+];
+
+const experienceLinks: NavLink[] = [
+  { label: "Home", kind: "route", to: "/" },
+  { label: "About", kind: "route", to: "/about" },
+  { label: "Experience", kind: "route", to: "/experience" },
   { label: "Contact", kind: "route", to: "/" },
 ];
 
@@ -33,7 +38,12 @@ export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const { path, navigate } = useRoute();
 
-  const links = path === "/about" ? aboutLinks : homeLinks;
+  const links =
+    path === "/about"
+      ? aboutLinks
+      : path === "/experience"
+        ? experienceLinks
+        : homeLinks;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -55,6 +65,16 @@ export default function Navbar() {
     .slice(0, 2)
     .join("");
 
+  const isActive = (link: NavLink) => {
+    if (link.kind === "route") {
+      if (link.to === "/" && path === "/" && link.label === "Home") return true;
+      if (link.to === path && link.label !== "Home") return true;
+      if (link.label === "Experience" && path === "/experience") return true;
+      if (link.label === "About" && path === "/about") return true;
+    }
+    return false;
+  };
+
   const handleLink = (link: NavLink) => {
     setOpen(false);
     if (link.kind === "route") {
@@ -64,11 +84,6 @@ export default function Navbar() {
           document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
         }, 50);
       }
-      return;
-    }
-
-    if (path === "/about") {
-      document.querySelector(link.hash)?.scrollIntoView({ behavior: "smooth" });
       return;
     }
 
@@ -128,7 +143,11 @@ export default function Navbar() {
               key={link.label}
               type="button"
               onClick={() => handleLink(link)}
-              className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+              className={`text-sm transition-colors ${
+                isActive(link)
+                  ? "text-[var(--color-text)] font-medium"
+                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+              }`}
             >
               {link.label}
             </button>
@@ -180,7 +199,11 @@ export default function Navbar() {
                   key={link.label}
                   type="button"
                   onClick={() => handleLink(link)}
-                  className="py-3 text-left text-[15px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] border-b border-[var(--color-border-soft)] last:border-none"
+                  className={`py-3 text-left text-[15px] border-b border-[var(--color-border-soft)] last:border-none ${
+                    isActive(link)
+                      ? "text-[var(--color-text)] font-medium"
+                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                  }`}
                 >
                   {link.label}
                 </button>
