@@ -1,7 +1,32 @@
-import { ArrowLeft, Award } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, Award, ExternalLink } from "lucide-react";
 import { certifications } from "../data/certifications";
 import { useRoute } from "../hooks/useRoute";
 import Reveal from "./Reveal";
+
+function CertImage({ src, alt }: { src?: string; alt: string }) {
+  const [failed, setFailed] = useState(false);
+
+  if (!src || failed) {
+    return (
+      <div className="aspect-[16/10] bg-[var(--color-bg-elevated)] grid place-items-center">
+        <Award size={28} className="text-[var(--color-text-faint)]" aria-hidden />
+      </div>
+    );
+  }
+
+  return (
+    <div className="aspect-[16/10] bg-[var(--color-bg-elevated)] overflow-hidden">
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        onError={() => setFailed(true)}
+        className="w-full h-full object-cover"
+      />
+    </div>
+  );
+}
 
 export default function CertificationsPage() {
   const { navigate } = useRoute();
@@ -32,45 +57,33 @@ export default function CertificationsPage() {
             </p>
           </Reveal>
 
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {certifications.map((cert, i) => (
-              <Reveal key={cert.id} delay={i * 0.04}>
-                <article className="h-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 flex flex-col gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--color-accent)] hover:shadow-[0_0_0_1px_var(--color-accent-soft)]">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-md border border-[var(--color-border)] grid place-items-center text-[var(--color-accent)] shrink-0">
-                      {cert.issuer ? (
-                        <span className="text-xs font-semibold font-[var(--font-display)]">
-                          {cert.issuer
-                            .split(/\s+/)
-                            .map((w) => w[0])
-                            .slice(0, 2)
-                            .join("")
-                            .toUpperCase()}
-                        </span>
-                      ) : (
-                        <Award size={16} />
-                      )}
+              <Reveal key={cert.id} delay={i * 0.05}>
+                <article className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden h-full flex flex-col">
+                  <CertImage src={cert.image} alt={`${cert.title} certificate`} />
+                  <div className="p-5 flex flex-col gap-2 flex-1">
+                    <div className="w-9 h-9 rounded-md border border-[var(--color-border)] grid place-items-center text-[var(--color-accent)] mb-1">
+                      <Award size={16} aria-hidden />
                     </div>
-                    <p className="text-sm text-[var(--color-text-muted)] leading-snug">
-                      {cert.issuer}
+                    <h2 className="font-[var(--font-display)] text-[var(--color-text)] font-medium leading-snug">
+                      {cert.title}
+                    </h2>
+                    <p className="text-sm text-[var(--color-text-muted)]">
+                      {cert.issuer} · {cert.date}
                     </p>
+                    {cert.credentialUrl && (
+                      <a
+                        href={cert.credentialUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-auto pt-3 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors"
+                      >
+                        <ExternalLink size={14} aria-hidden />
+                        View credential
+                      </a>
+                    )}
                   </div>
-                  <h2 className="font-[var(--font-display)] text-[var(--color-text)] font-medium leading-snug text-base">
-                    {cert.title}
-                  </h2>
-                  <p className="mt-auto text-xs font-mono text-[var(--color-text-faint)]">
-                    {cert.date}
-                  </p>
-                  {cert.credentialUrl && (
-                    <a
-                      href={cert.credentialUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm font-medium text-[var(--color-accent)] hover:underline"
-                    >
-                      View credential
-                    </a>
-                  )}
                 </article>
               </Reveal>
             ))}

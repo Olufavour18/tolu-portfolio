@@ -6,7 +6,6 @@ import Hero from "./components/Hero";
 import HomeAboutIntro from "./components/HomeAboutIntro";
 import ExperiencePreview from "./components/ExperiencePreview";
 import ExperiencePage from "./components/ExperiencePage";
-import CertificationsSection from "./components/CertificationsSection";
 import CertificationsPage from "./components/CertificationsPage";
 import Testimonials from "./components/Testimonials";
 import ContactSection from "./components/ContactSection";
@@ -19,7 +18,6 @@ function HomePage() {
       <Hero />
       <HomeAboutIntro />
       <ExperiencePreview />
-      <CertificationsSection />
       <Testimonials />
       <ContactSection />
     </main>

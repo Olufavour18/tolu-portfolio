@@ -1,6 +1,6 @@
 import type { Certification } from "./types";
 
-// Edit this array to add/remove certifications. The /certifications page reads it.
+// Images live in /public/certifications/ and are referenced with absolute paths from the site root.
 export const certifications: Certification[] = [
   {
     id: "cert-001",
@@ -15,11 +15,5 @@ export const certifications: Certification[] = [
     issuer: "DataAce Academy",
     date: "July 2023",
     image: "/certifications/dataace-academy-data-analytics-certificate.png",
-  },
-  {
-    id: "cert-placeholder",
-    title: "Placeholder Certificate — replace me",
-    issuer: "Issuer name",
-    date: "YYYY",
   },
 ];
