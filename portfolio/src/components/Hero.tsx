@@ -1,7 +1,7 @@
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowUpRight, Download } from "lucide-react";
 import { site } from "../data/site";
-import WorkflowBackground from "./WorkflowBackground";
+import AutomationVisual from "./AutomationVisual";
 import { useRoute } from "../hooks/useRoute";
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
@@ -100,9 +100,9 @@ export default function Hero() {
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          className="relative aspect-square max-w-[420px] mx-auto w-full rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6"
+          className="relative aspect-square max-w-[420px] mx-auto w-full rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden"
         >
-          <WorkflowBackground />
+          <AutomationVisual />
         </motion.div>
       </div>
     </section>

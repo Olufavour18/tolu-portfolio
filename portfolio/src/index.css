@@ -22,8 +22,11 @@
   --color-accent-2: #33D6BE;
   --color-accent-2-soft: #33D6BE1F;
 
-  /* Soft gold for experience quote bar + role headings */
   --color-gold: #C9A35A;
+
+  /* Automation visual */
+  --color-pulse: #33D6BE;
+  --color-line: #3A4155;
 }
 
 html.light {
@@ -45,6 +48,9 @@ html.light {
   --color-accent-2-soft: #128F7C14;
 
   --color-gold: #9A7B2F;
+
+  --color-pulse: #128F7C;
+  --color-line: #C5CAD8;
 }
 
 html {
