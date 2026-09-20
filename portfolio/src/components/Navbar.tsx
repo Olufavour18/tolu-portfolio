@@ -4,32 +4,19 @@ import { Menu, X, Moon, Sun } from "lucide-react";
 import { site } from "../data/site";
 import { useTheme } from "../hooks/useTheme";
 import { useRoute } from "../hooks/useRoute";
-import { openSection } from "../hooks/useExpand";
+
+type RoutePath = "/" | "/about" | "/experience" | "/certifications";
 
 type NavLink =
-  | { label: string; kind: "route"; to: "/" | "/about" | "/experience" }
-  | { label: string; kind: "hash"; hash: string; section?: "certifications" };
+  | { label: string; kind: "route"; to: RoutePath }
+  | { label: string; kind: "hash"; hash: string };
 
-const homeLinks: NavLink[] = [
+const mainLinks: NavLink[] = [
   { label: "Home", kind: "route", to: "/" },
   { label: "About", kind: "route", to: "/about" },
   { label: "Experience", kind: "route", to: "/experience" },
-  { label: "Certifications", kind: "hash", hash: "#certifications", section: "certifications" },
+  { label: "Certifications", kind: "route", to: "/certifications" },
   { label: "Contact", kind: "hash", hash: "#contact" },
-];
-
-const aboutLinks: NavLink[] = [
-  { label: "Home", kind: "route", to: "/" },
-  { label: "About", kind: "route", to: "/about" },
-  { label: "Experience", kind: "route", to: "/experience" },
-  { label: "Contact", kind: "route", to: "/" },
-];
-
-const experienceLinks: NavLink[] = [
-  { label: "Home", kind: "route", to: "/" },
-  { label: "About", kind: "route", to: "/about" },
-  { label: "Experience", kind: "route", to: "/experience" },
-  { label: "Contact", kind: "route", to: "/" },
 ];
 
 export default function Navbar() {
@@ -37,13 +24,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { path, navigate } = useRoute();
-
-  const links =
-    path === "/about"
-      ? aboutLinks
-      : path === "/experience"
-        ? experienceLinks
-        : homeLinks;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -66,38 +46,26 @@ export default function Navbar() {
     .join("");
 
   const isActive = (link: NavLink) => {
-    if (link.kind === "route") {
-      if (link.to === "/" && path === "/" && link.label === "Home") return true;
-      if (link.to === path && link.label !== "Home") return true;
-      if (link.label === "Experience" && path === "/experience") return true;
-      if (link.label === "About" && path === "/about") return true;
-    }
-    return false;
+    if (link.kind !== "route") return false;
+    if (link.label === "Home") return path === "/";
+    return path === link.to;
   };
 
   const handleLink = (link: NavLink) => {
     setOpen(false);
     if (link.kind === "route") {
       navigate(link.to);
-      if (link.label === "Contact" && link.to === "/") {
-        setTimeout(() => {
-          document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-        }, 50);
-      }
       return;
     }
-
+    // Contact hash
     if (path !== "/") {
       navigate("/");
       setTimeout(() => {
-        if (link.section) openSection(link.section);
-        document.querySelector(link.hash)?.scrollIntoView({ behavior: "smooth" });
-      }, 80);
-      return;
+        document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+      }, 50);
+    } else {
+      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
     }
-
-    if (link.section) openSection(link.section);
-    document.querySelector(link.hash)?.scrollIntoView({ behavior: "smooth" });
   };
 
   const goHome = () => {
@@ -138,7 +106,7 @@ export default function Navbar() {
         </button>
 
         <div className="hidden md:flex items-center gap-8">
-          {links.map((link) => (
+          {mainLinks.map((link) => (
             <button
               key={link.label}
               type="button"
@@ -194,7 +162,7 @@ export default function Navbar() {
             className="md:hidden overflow-hidden bg-[var(--color-bg)] border-b border-[var(--color-border-soft)]"
           >
             <div className="container-page py-4 flex flex-col gap-1">
-              {links.map((link) => (
+              {mainLinks.map((link) => (
                 <button
                   key={link.label}
                   type="button"
